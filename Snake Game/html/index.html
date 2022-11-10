@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/jquery/css/styler.css" />
+    <script type="text/javascript" src="/jquery/js/js.js"></script>
+    <title>jogo da cobra</title>
+  </head>
+  <body>
+    <!--codigo inspirado no vidio do https://www.youtube.com/watch?v=Hua1OSXitdQ//  -->
+    <h2 id="nome">jogo da cobra</h2>
+    <div class="game">
+      <div class="game-area">
+        <canvas id="area" width="400" height="400"></canvas>
+        <script type="text/javascript">
+          window.onload = function () {
+            let area = document.getElementById("area");
+            //capturar o quadro de pontuação
+            let XP_coletados = document.getElementById("pontos");
+            let toptal_de_XP = 0;
+            // define o contexto do elemento area para 2d
+            let ctx = area.getContext("2d");
+            document.addEventListener("keydown", keyPush);
+            ////////////////////////////////////////////////////////////////
+            setInterval(game, 120);
+
+            //quantos quadrado a cobra ira andar
+            const vel = 1;
+            let eixo_X = 0;
+            let eixo_Y = 0;
+            //XP inicial
+            let XP = 10;
+            let pontos_XP = 15;
+            // quantidade de pontos
+            const tp = 20;
+            const qp = 20;
+            let frutas = 15;
+            let flutas = 15;
+            // rastro da cobra
+            let trail = [];
+            tail = 2;
+            function game() {
+              XP += eixo_X;
+              pontos_XP += eixo_Y;
+              //controle da cobra
+              if (XP < 0) {
+                XP = qp - 1;
+              }
+              if (XP > qp - 1) {
+                XP = 0;
+              }
+              if (pontos_XP < 0) {
+                pontos_XP = qp - 1;
+              }
+              if (pontos_XP > qp - 1) {
+                pontos_XP = 0;
+              }
+
+              ctx.fillStyle = "rgb(1, 2, 67)";
+              ctx.fillRect(0, 0, area.width, area.height);
+              ctx.fillStyle = " rgb(60, 179, 113)";
+              ctx.fillRect(frutas * tp, frutas * tp, tp, tp, 2, 2);
+
+              for (let i = 0; i < trail.length; i++) {
+                ctx.fillStyle = "#a126c3";
+                ctx.strokeStyle = "#004346";
+                ctx.fillRect(trail[i].x * tp, trail[i].y * tp, tp, tp);
+                ctx.strokeRect(trail[i].x * tp, trail[i].y * tp, tp, tp);
+                if (trail[i].x == XP && trail[i].y == pontos_XP) {
+                  eixo_X = eixo_Y = 0;
+                  tail = 2;
+                  toptal_de_XP = 0;
+                }
+              }
+
+              trail.push({ x: XP, y: pontos_XP });
+              while (trail.length > tail) {
+                trail.shift();
+              }
+
+              if (frutas == XP && frutas == pontos_XP) {
+                tail++;
+                frutas = Math.floor(Math.random() * qp);
+                frutas = Math.floor(Math.random() * qp);
+                XP_coletados.innerHTML = ++toptal_de_XP;
+              }
+            }
+
+            window.addEventListener(
+              "keydown",
+              function (e) {
+                // teclas
+                if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                  e.preventDefault();
+                }
+              },
+              false
+            );
+
+            let lastKeyPressed = "";
+
+            function keyPush(e) {
+              switch (e.keyCode) {
+                case 37: // Left
+                  if (lastKeyPressed != "right") {
+                    eixo_X = -vel;
+                    eixo_Y = 0;
+                    lastKeyPressed = "left";
+                  }
+                  break;
+                case 38: // up
+                  if (lastKeyPressed != "down") {
+                    eixo_X = 0;
+                    eixo_Y = -vel;
+                    lastKeyPressed = "up";
+                  }
+                  break;
+                case 39: // right
+                  if (lastKeyPressed != "left") {
+                    eixo_X = vel;
+                    eixo_Y = 0;
+                    lastKeyPressed = "right";
+                  }
+                  break;
+                case 40: // down
+                  if (lastKeyPressed != "up") {
+                    eixo_X = 0;
+                    eixo_Y = vel;
+                    lastKeyPressed = "down";
+                  }
+                  break;
+              }
+            }
+          };
+        </script>
+      </div>
+      <div class="pontuacao">Pontuação: <span id="pontos">0</span></div>
+    </div>
+    <p>utilize as setas pra jogar</p>
+  </body>
+</html>
